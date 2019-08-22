@@ -43,49 +43,45 @@
 
 #include "mission_block.h"
 
-#include <uORB/Publication.hpp>
-#include <uORB/topics/vehicle_attitude_setpoint.h>
-
 class Navigator;
 
 class GpsFailure : public MissionBlock, public ModuleParams
 {
 public:
-    GpsFailure(Navigator *navigator);
-    ~GpsFailure() = default;
+	GpsFailure(Navigator *navigator);
+	~GpsFailure() = default;
 
-    void on_inactive() override;
-    void on_activation() override;
-    void on_active() override;
+	void on_inactive() override;
+	void on_activation() override;
+	void on_active() override;
 
 private:
-    DEFINE_PARAMETERS(
-        (ParamFloat<px4::params::NAV_GPSF_LT>) _param_nav_gpsf_lt,
-        (ParamFloat<px4::params::NAV_GPSF_R>) _param_nav_gpsf_r,
-        (ParamFloat<px4::params::NAV_GPSF_P>) _param_nav_gpsf_p,
-        (ParamFloat<px4::params::NAV_GPSF_TR>) _param_nav_gpsf_tr
-    )
+	DEFINE_PARAMETERS(
+		(ParamFloat<px4::params::NAV_GPSF_LT>) _param_nav_gpsf_lt,
+		(ParamFloat<px4::params::NAV_GPSF_R>) _param_nav_gpsf_r,
+		(ParamFloat<px4::params::NAV_GPSF_P>) _param_nav_gpsf_p,
+		(ParamFloat<px4::params::NAV_GPSF_TR>) _param_nav_gpsf_tr
+	)
 
-    enum GPSFState {
-        GPSF_STATE_NONE = 0,
-        GPSF_STATE_LOITER = 1,
-        GPSF_STATE_TERMINATE = 2,
-        GPSF_STATE_END = 3,
-    } _gpsf_state{GPSF_STATE_NONE};
+	enum GPSFState {
+		GPSF_STATE_NONE = 0,
+		GPSF_STATE_LOITER = 1,
+		GPSF_STATE_TERMINATE = 2,
+		GPSF_STATE_END = 3,
+	} _gpsf_state{GPSF_STATE_NONE};
 
-    hrt_abstime _timestamp_activation{0}; //*< timestamp when this mode was activated */
+	hrt_abstime _timestamp_activation{0}; //*< timestamp when this mode was activated */
 
-    uORB::Publication<vehicle_attitude_setpoint_s>	_att_sp_pub{ORB_ID(vehicle_attitude_setpoint)};
-    uORB::Publication<vehicle_attitude_setpoint_s>	_virt_att_sp_pub{ORB_ID(fw_virtual_attitude_setpoint)};
+	orb_advert_t	_att_sp_pub{nullptr};
 
-    /**
-     * Set the GPSF item
-     */
-    void		set_gpsf_item();
+	/**
+	 * Set the GPSF item
+	 */
+	void		set_gpsf_item();
 
-    /**
-     * Move to next GPSF item
-     */
-    void		advance_gpsf();
+	/**
+	 * Move to next GPSF item
+	 */
+	void		advance_gpsf();
 
 };
