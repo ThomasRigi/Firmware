@@ -44,7 +44,7 @@
 #include <drivers/device/device.h>
 #include <lib/led/led.h>
 #include <px4_getopt.h>
-#include <px4_work_queue/ScheduledWorkItem.hpp>
+#include <px4_platform_common/px4_work_queue/ScheduledWorkItem.hpp>
 
 class RGBLED_PWM : public device::CDev, public px4::ScheduledWorkItem
 {
@@ -88,7 +88,7 @@ RGBLED_PWM *g_rgbled = nullptr;
 
 RGBLED_PWM::RGBLED_PWM() :
 	CDev("rgbled_pwm", RGBLED_PWM0_DEVICE_PATH),
-	ScheduledWorkItem(px4::wq_configurations::lp_default)
+	ScheduledWorkItem(MODULE_NAME, px4::wq_configurations::lp_default)
 {
 }
 
