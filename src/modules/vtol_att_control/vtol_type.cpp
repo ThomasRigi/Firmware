@@ -456,6 +456,12 @@ float VtolType::pusher_assist()
 		const Quatf q_sp(Eulerf(_v_att_sp->roll_body, _v_att_sp->pitch_body, euler_sp(2)));
 		q_sp.copyTo(_v_att_sp->q_d);
 		_v_att_sp->q_d_valid = true;
+
+		// rescale MC thrust to no longer include the forward component
+		float sideways_thrust = cosf(euler(2)) * _local_pos_sp->thrust[1] - sinf(euler(2)) * _local_pos_sp->thrust[0];
+		float new_norm = sqrtf(sideways_thrust * sideways_thrust + _local_pos_sp->thrust[2] * _local_pos_sp->thrust[2]);
+		_v_att_sp->thrust_body[2] = -new_norm;
+
 	}
 
 	return forward_thrust;
